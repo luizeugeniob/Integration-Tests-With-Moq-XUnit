@@ -8,10 +8,11 @@ namespace ToDo.Services.Handlers
     {
         IToDoTaskRepository _repository;
 
-        public GetCategoryByIdHandler()
+        public GetCategoryByIdHandler(IToDoTaskRepository repository)
         {
-            _repository = new ToDoTaskRepository();
+            _repository = repository;
         }
+
         public Category Execute(GetCategoryById command)
         {
             return _repository.GetCategoryById(command.Id);

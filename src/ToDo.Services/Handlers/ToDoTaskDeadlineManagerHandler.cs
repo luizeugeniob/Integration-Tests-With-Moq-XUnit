@@ -9,9 +9,9 @@ namespace ToDo.Services.Handlers
     {
         IToDoTaskRepository _repository;
 
-        public ToDoTaskDeadlineManagerHandler()
+        public ToDoTaskDeadlineManagerHandler(IToDoTaskRepository repository)
         {
-            _repository = new ToDoTaskRepository();
+            _repository = repository;
         }
 
         public void Execute(ToDoTaskDeadlineManager command)

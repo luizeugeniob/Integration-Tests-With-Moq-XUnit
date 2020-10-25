@@ -9,9 +9,9 @@ namespace ToDo.Infrastructure
     {
         DbToDoTasksContext _context;
 
-        public ToDoTaskRepository()
+        public ToDoTaskRepository(DbToDoTasksContext context)
         {
-            _context = new DbToDoTasksContext();
+            _context = context;
         }
 
         public void InsertTasks(params ToDoTask[] tasks)

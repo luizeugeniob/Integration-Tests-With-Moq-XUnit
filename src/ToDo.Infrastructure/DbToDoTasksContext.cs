@@ -15,7 +15,7 @@ namespace ToDo.Infrastructure
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            base.OnConfiguring(optionsBuilder);
+            if (optionsBuilder.IsConfigured) return;
 
             optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=ToDoDB;Trusted_Connction=true;");
         }

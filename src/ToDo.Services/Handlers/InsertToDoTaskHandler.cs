@@ -10,9 +10,9 @@ namespace ToDo.Services.Handlers
         IToDoTaskRepository _repository;
         ILogger<InsertToDoTaskHandler> _logger;
 
-        public InsertToDoTaskHandler()
+        public InsertToDoTaskHandler(IToDoTaskRepository repository)
         {
-            _repository = new ToDoTaskRepository();
+            _repository = repository;
             _logger = new LoggerFactory().CreateLogger<InsertToDoTaskHandler>();
         }
 

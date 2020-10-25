@@ -13,6 +13,13 @@ namespace ToDo.Infrastructure
         {
         }
 
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            base.OnConfiguring(optionsBuilder);
+
+            optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=ToDoDB;Trusted_Connction=true;");
+        }
+
         public DbSet<ToDoTask> ToDoTasks { get; set; }
         public DbSet<Category> Categories { get; set; }
     }

@@ -7,9 +7,9 @@ namespace ToDo.Core.Commands
     /// </summary>
     public class ToDoTaskDeadlineManager
     {
-        public ToDoTaskDeadlineManager()
+        public ToDoTaskDeadlineManager(DateTime dateTimeNow)
         {
-            DateTimeNow = DateTime.Now;
+            DateTimeNow = dateTimeNow;
         }
 
         public DateTime DateTimeNow { get; }

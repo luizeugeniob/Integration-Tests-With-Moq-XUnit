@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Moq;
 using System;
 using ToDo.Core.Commands;
 using ToDo.Core.Models;
@@ -29,6 +30,26 @@ namespace ToDo.Tests
 
             //Assert
             var task = repository.GetTasks(t => t.Title.Equals(command.Title));
+        }
+
+        [Fact]
+        public void WhenThrowsExceptionResultIsSuccessShouldBeFalse()
+        {
+            //Arrange
+            var command = new InsertToDoTask("Study XUnit", new Category("Study"), new DateTime(2020, 12, 31));
+
+            var mock = new Mock<IToDoTaskRepository>();
+            mock.Setup(r => r.InsertTasks(It.IsAny<ToDoTask[]>()))
+                .Throws(new Exception("Ocorreu um erro ao incluir tarefas."));
+            var repository = mock.Object;
+
+            var handler = new InsertToDoTaskHandler(repository);
+
+            //Act
+            var response = handler.Execute(command);
+
+            //Assert
+            Assert.False(response.IsSuccess);
         }
     }
 }

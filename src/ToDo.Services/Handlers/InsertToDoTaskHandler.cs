@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using System;
 using ToDo.Core.Commands;
 using ToDo.Core.Models;
 using ToDo.Infrastructure;
@@ -16,20 +17,29 @@ namespace ToDo.Services.Handlers
             _logger = new LoggerFactory().CreateLogger<InsertToDoTaskHandler>();
         }
 
-        public void Execute(InsertToDoTask command)
+        public CommandResult Execute(InsertToDoTask command)
         {
-            var task = new ToDoTask
-            (
-                id: 0,
-                title: command.Title,
-                deadline: command.Deadline,
-                category: command.Category,
-                completionDate: null,
-                status: ToDoTaskStatus.Created
-            );
+            try
+            {
+                var task = new ToDoTask
+                (
+                    id: 0,
+                    title: command.Title,
+                    deadline: command.Deadline,
+                    category: command.Category,
+                    completionDate: null,
+                    status: ToDoTaskStatus.Created
+                );
 
-            _logger.LogDebug("Persistindo a tarefa...");
-            _repository.InsertTasks(task);
+                _logger.LogDebug("Persistindo a tarefa...");
+                _repository.InsertTasks(task);
+
+                return new CommandResult(true);
+            }
+            catch (Exception ex)
+            {
+                return new CommandResult(false);
+            }
         }
     }
 }

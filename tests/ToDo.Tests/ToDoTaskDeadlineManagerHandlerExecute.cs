@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -54,6 +55,34 @@ namespace ToDo.Tests
             //Assert
             var delayedTasks = repository.GetTasks(t => t.Status == ToDoTaskStatus.Delayed);
             Assert.Equal(4, delayedTasks.Count());
+        }
+
+        [Fact]
+        public void WhenInvokedShouldCallUpdateTasksOnlyOnceRegardlessTheNumberOfTasks()
+        {
+            //Arrange
+            var category = new Category("Dummy");
+            var tasks = new List<ToDoTask>
+            {
+                new ToDoTask(1, "Task 1", category, new DateTime(2019, 9, 28), null, ToDoTaskStatus.Created),
+                new ToDoTask(2, "Task 2", category, new DateTime(2019, 8, 12), null, ToDoTaskStatus.Pending),
+                new ToDoTask(3, "Task 3", category, new DateTime(2019, 7, 19), null, ToDoTaskStatus.Created),
+            };
+            var mock = new Mock<IToDoTaskRepository>();
+            mock.Setup(r => r.GetTasks(It.IsAny<Func<ToDoTask, bool>>()))
+                .Returns(tasks);
+
+
+            var repository = mock.Object;
+
+            var command = new ToDoTaskDeadlineManager(new DateTime(2020, 1, 1));
+            var handler = new ToDoTaskDeadlineManagerHandler(repository);
+
+            //Act
+            handler.Execute(command);
+
+            //Assert
+            mock.Verify(r => r.UpdateTasks(It.IsAny<ToDoTask[]>()), Times.Once());
         }
     }
 }

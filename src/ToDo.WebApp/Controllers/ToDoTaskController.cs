@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using ToDo.Core.Commands;
 using ToDo.Infrastructure;
 using ToDo.Services.Handlers;
@@ -10,10 +11,12 @@ namespace ToDo.WebApp.Controllers
     public class ToDoTaskController : ControllerBase
     {
         private readonly IToDoTaskRepository _repository;
+        private readonly ILogger<InsertToDoTaskHandler> _logger;
 
-        public ToDoTaskController(IToDoTaskRepository repository)
+        public ToDoTaskController(IToDoTaskRepository repository, ILogger<InsertToDoTaskHandler> logger)
         {
             _repository = repository;
+            _logger = logger;
         }
 
         [HttpPost]
@@ -27,7 +30,7 @@ namespace ToDo.WebApp.Controllers
             }
 
             var taskCommand = new InsertToDoTask(model.Title, categoria, model.Deadline);
-            var handler = new InsertToDoTaskHandler(_repository);
+            var handler = new InsertToDoTaskHandler(_repository,_logger);
             handler.Execute(taskCommand);
             return Ok();
         }

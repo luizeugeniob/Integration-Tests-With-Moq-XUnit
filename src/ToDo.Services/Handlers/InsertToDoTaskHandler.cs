@@ -11,10 +11,10 @@ namespace ToDo.Services.Handlers
         IToDoTaskRepository _repository;
         ILogger<InsertToDoTaskHandler> _logger;
 
-        public InsertToDoTaskHandler(IToDoTaskRepository repository)
+        public InsertToDoTaskHandler(IToDoTaskRepository repository, ILogger<InsertToDoTaskHandler> logger)
         {
             _repository = repository;
-            _logger = new LoggerFactory().CreateLogger<InsertToDoTaskHandler>();
+            _logger = logger;
         }
 
         public CommandResult Execute(InsertToDoTask command)
@@ -38,6 +38,7 @@ namespace ToDo.Services.Handlers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, ex.Message);
                 return new CommandResult(false);
             }
         }

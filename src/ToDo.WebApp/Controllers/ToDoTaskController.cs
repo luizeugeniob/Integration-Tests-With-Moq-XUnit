@@ -20,18 +20,18 @@ namespace ToDo.WebApp.Controllers
         }
 
         [HttpPost]
-        public IActionResult EndpointCadastraTarefa(Models.InsertToDoTask model)
+        public IActionResult Post(Models.InsertToDoTask model)
         {
             var categoryCommand = new GetCategoryById(model.CategoryId);
-            var categoria = new GetCategoryByIdHandler(_repository).Execute(categoryCommand);
-            if (categoria == null)
+            var category = new GetCategoryByIdHandler(_repository).Execute(categoryCommand);
+            if (category == null)
             {
                 return NotFound("Categoria não encontrada!");
             }
 
-            var taskCommand = new InsertToDoTask(model.Title, categoria, model.Deadline);
+            var command = new InsertToDoTask(model.Title, category, model.Deadline);
             var handler = new InsertToDoTaskHandler(_repository,_logger);
-            handler.Execute(taskCommand);
+            handler.Execute(command);
             return Ok();
         }
     }

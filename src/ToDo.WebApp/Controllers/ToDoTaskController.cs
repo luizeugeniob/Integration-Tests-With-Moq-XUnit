@@ -31,8 +31,10 @@ namespace ToDo.WebApp.Controllers
 
             var command = new InsertToDoTask(model.Title, category, model.Deadline);
             var handler = new InsertToDoTaskHandler(_repository,_logger);
-            handler.Execute(command);
-            return Ok();
+            var result = handler.Execute(command);
+            if (result.IsSuccess) return Ok();
+
+            return StatusCode(500);
         }
     }
 }

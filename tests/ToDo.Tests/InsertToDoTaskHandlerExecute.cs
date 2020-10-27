@@ -35,6 +35,46 @@ namespace ToDo.Tests
             var task = repository.GetTasks(t => t.Title.Equals(command.Title));
         }
 
+        delegate void GetLogMessage(LogLevel logLevel, EventId eventId, It.IsAnyType state, Exception exception, Func<It.IsAnyType, Exception, string> func);
+
+        [Fact]
+        public void GivenValidToDoTaskShouldLog()
+        {
+            //Arrange
+            var command = new InsertToDoTask("Study XUnit", new Category("Study"), new DateTime(2020, 12, 31));
+
+            var mockLogger = new Mock<ILogger<InsertToDoTaskHandler>>();
+
+            LogLevel getLogLevel = LogLevel.Error;
+            string getMessage = string.Empty;
+
+            GetLogMessage getLogMessage = (logLevel, eventId, state, exception, func) =>
+            {
+                getLogLevel = logLevel;
+                getMessage = func(state, exception);
+            };
+
+            mockLogger.Setup(l =>
+                l.Log(
+                    It.IsAny<LogLevel>(),
+                    It.IsAny<EventId>(),
+                    It.IsAny<It.IsAnyType>(),
+                    It.IsAny<Exception>(),
+                    (Func<It.IsAnyType, Exception, string>)It.IsAny<object>()
+                )).Callback(getLogMessage);
+
+            var mock = new Mock<IToDoTaskRepository>();
+
+            var handler = new InsertToDoTaskHandler(mock.Object, mockLogger.Object);
+
+            //Act
+            handler.Execute(command);
+
+            //Assert
+            Assert.Equal(LogLevel.Information, getLogLevel);
+            Assert.Equal("", getMessage);
+        }
+
         [Fact]
         public void WhenThrowsExceptionResultIsSuccessShouldBeFalse()
         {
